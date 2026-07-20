@@ -84,11 +84,23 @@ const app = express();
 // HELMET — Adds security headers to protect against common attacks
 app.use(helmet({ crossOriginResourcePolicy: false }));
 
-// CORS — Allows our frontend (localhost:5173) to talk to our backend (localhost:5000)
+// CORS — Allows our frontend to talk to our backend.
 // Without CORS, browsers block requests between different domains/ports.
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://ecommerece-gold-zeta.vercel.app',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. curl, mobile apps, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
     credentials: true,
   })
 );
