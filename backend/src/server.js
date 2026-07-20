@@ -182,4 +182,10 @@ app.listen(PORT, () => {
   console.log(`🤖 AI: ${process.env.GROQ_API_KEY ? 'Groq connected' : 'Mock mode (add GROQ_API_KEY)'}\n`);
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "E-Commerce Backend is running 🚀",
+  });
+});
 module.exports = app;
